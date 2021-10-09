@@ -1,3 +1,27 @@
 #!/bin/bash
 
 echo "test"
+
+#for creating random numbers 
+
+varname=$(( $RANDOM % 10 ))
+
+#where $RANDOM is a random number and % 10 is modulo 10, this can be used
+#to make random numbers of any range i.e % 74 +1 will give (1-75). 
+
+#arrays in bash
+
+arrname=(elements are separated by spaces)
+
+#or 
+
+declare -a arrayname=(more elements separated by spaces)
+
+#the above is an array of 5 elements
+
+echo ${arrname[@]} 
+
+#inside [] is the index or in this case @ prints the whole array
+#indices in bash start with 0
+
+
