@@ -7,51 +7,99 @@
 #change the middle number to 00 to be consistent with assignment
 
 #v1.0 : improvement to be done on repetition of elements. At this point we have a printout of the cols as rows
+#v1.1 : completed the added code to prevent repitition, and we have also padded the l column with zeros when we print to terminal. We have also included the middle 00 spot. 
+
 #will need to add for loop in the future
 
 declare -a Lcol=()
-
-for i in {1..5}
+i=0
+   
+while [[ $i -le 4 ]]
 do
-    num=$[RANDOM%14+1]
-    Lcol+=[$num] 
+num=`expr $RANDOM \% 15 + 1`
+    if [[ ! ${Lcol[*]} =~ $num ]]
+    then 
+        Lcol+=("$num")
+        ((i++))
+    fi
 done
 
-#echo $Lcol (this was used to print the array to check it)
+declare -a Icol=()
+i=0
+   
+while [[ $i -le 4 ]]
+do
+num=`expr $RANDOM \% 15 + 16`
+    if [[ ! ${Icol[*]} =~ $num ]]
+    then
+        Icol+=("$num")
+        ((i++))
+    fi
+done
+
+declare -a Ncol=()
+i=0
+   
+while [[ $i -le 4 ]]
+do
+num=`expr $RANDOM \% 15 + 31`
+    if [[ ! ${Ncol[*]} =~ $num ]]
+    then
+        Ncol+=("$num")
+        ((i++))
+    fi
+done
+
+#trying to add 00 at the 3rd element in Ncol 
+Ncol=( "${Ncol[@]:0:2}" "00" "${Ncol[@]:3}" )
+
+declare -a Ucol=()
+i=0
+   
+while [[ $i -le 4 ]]
+do
+num=`expr $RANDOM \% 15 + 46`
+    if [[ ! ${Ucol[*]} =~ $num ]]
+    then
+        Ucol+=("$num")
+        ((i++))
+    fi
+done
+
+declare -a Xcol=()
+i=0
+   
+while [[ $i -le 4 ]]
+do
+num=`expr $RANDOM \% 15 + 61`
+    if [[ ! ${Xcol[*]} =~ $num ]]
+    then
+        Xcol+=("$num")
+        ((i++))
+    fi
+done
 
 #nice, this works. Lets copy it over a bunch of times and change
 #the range for the other columns. 
 
-declare -a Icol=()
+#the next lines are to pad 0's for single digit numbers in Lcol. 
 
-for i in {1..5}
-do
-    num=$[RANDOM%14+16]
-    Icol+=[$num] 
+declare -a Lcolpadded=()
+
+for i in {0..4}
+do 
+    tmp=$(printf "%02d" ${Lcol[$i]})
+    Lcolpadded+=("$tmp")
 done
 
-declare -a Ncol=()
+#remember for calculations to use Lcol and not Lcolpadded as Lcolpadded is an array of strings 
 
-for i in {1..5}
-do
-    num=$[RANDOM%14+31]
-    Ncol+=[$num] 
-done
+#need to print out the card as cols instead of rows. 
 
-declare -a Ucol=()
 
-for i in {1..5}
-do
-    num=$[RANDOM%14+46]
-    Ucol+=[$num] 
-done
 
-declare -a Xcol=()
+#print out the card to see it 
+echo -e "${Lcolpadded[@]}\n""${Icol[@]}\n""${Ncol[@]}\n""${Ucol[@]}\n""${Xcol[@]}\n"
 
-for i in {1..5}
-do
-    num=$[RANDOM%14+61]
-    Xcol+=[$num] 
-done
 
-echo $Lcol $Icol $Ncol $Ucol $Xcol
+
