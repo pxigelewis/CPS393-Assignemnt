@@ -102,4 +102,9 @@ done
 echo -e "${Lcolpadded[@]}\n""${Icol[@]}\n""${Ncol[@]}\n""${Ucol[@]}\n""${Xcol[@]}\n"
 
 
+echo -e "This is the Linux card\n"
 
+for i in {0..4}
+do
+    echo "${Lcolpadded[$i]}" "${Icol[$i]}" "${Ncol[$i]}" "${Ucol[$i]}" "${Xcol[$i]}"
+done
