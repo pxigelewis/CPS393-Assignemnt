@@ -1,0 +1,16 @@
+#!/bin/bash
+
+declare -a callednums=()
+
+ran=`expr $RANDOM \% 75 + 1`
+
+#for each time we pull a number, we will check if it is a duplicate and either trash it or store it
+
+if [[ ! "${callednums[*]}" =~ "$ran" ]]
+then
+    callednums+="$ran"
+    echo "this is the $ran" #we can add additional processes here
+fi
+
+
+#generate number -> check if duplicate -> if not then store -> reprint list of called numbers + generated number. 

@@ -14,7 +14,7 @@ then
     #add in the error message here and then add in the prompt to make a randomly generated card. 
 fi 
 
-
+echo "here is the element at the first index ${wholecard[1]}"
 
 
 seed=${wholecard[0]}
@@ -57,4 +57,8 @@ fi
 
 #the next checks will be for appropriate length of rows of columns and that a seed exists. 
 
-#we're importing the file, and storing all the lines into an array of elements separated by spaces and newlines. We will then test the length of the array and of the individual elements (uniqueness, range, quantity). 
+#we're importing the file, and storing all the lines into 
+#an array of elements separated by spaces and newlines. 
+#We will then test the length of the array and of the 
+#individual elements (uniqueness, range, quantity). 
+exit
