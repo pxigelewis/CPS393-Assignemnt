@@ -1,0 +1,213 @@
+#!/bin/bash
+
+#exit status 1
+
+if [ ! -f $1 -o ! -r $1 ]
+then
+    echo "Input file is missing or unreadable."
+    exit 1
+fi
+
+
+
+#exit status 2
+
+if [[ $(cat $1 | wc -l) != 6 ]]
+then
+    echo "input file does not have 6 lines"
+    exit 2
+fi
+
+if [[ ${wholecard[$i]} = *[^0-9\]* ]]  #checking if the file has any non-digit characters
+   then
+       echo "seed line format error"
+       exit 3
+   fi
+
+
+for i in {0..30}
+do
+    if [[ $i == 0 ]]    #checking for layout errors
+    then
+        if [[ ${wholecard[$i]} = *[0-9]* ]]   #checking if the first row contains any non-digit characters
+        then
+            echo "card format error (layout error)"
+            exit 3
+        fi
+    else        #checking if the formatting of the matrix is wrong
+        if [[ $(echo ${wholecard[$i]} | grep "^[0-9]\+ [0-9]\+ [0-9]\+ [0-9]\+$") == "" ]]
+        then
+            echo "card format error (matrix format error)"
+            exit 3
+        fi
+    fi
+done
+
+
+
+
+#exit status 3
+
+if [[ ${wholecard[$i]} = *[^0-9\]* ]]  #checking if the file has any non-digit characters
+   then
+       echo "seed line format error"
+       exit 3
+   fi
+
+for i in {0..30}
+do
+
+
+declare -a wholecard=()
+while read line;
+do
+    wholecard+=($line)
+done < ./$1 #this uses a filename in the commandline in the same directory
+
+# ( "${arr[@]:index:length}" "item to add" "${arr[@]:index:length}" )
+
+if [ ${#wholecard[@]} != 26 ]
+then
+    echo "the length is not 26 items"
+    #add in the error message here and then add in the prompt to make a randomly generated card. 
+fi
+
+echo "here is the element at the first index ${wholecard[1]}"
+
+
+seed=${wholecard[0]}
+
+row1=( "${wholecard[@]:1:5}" )
+
+row2=( "${wholecard[@]:6:5}" )
+
+row3=( "${wholecard[@]:11:5}" )
+
+row4=( "${wholecard[@]:16:5}" )
+
+row5=( "${wholecard[@]:21:5}" )
+
+echo "${row1[@]}"
+echo "${row2[@]}"
+echo "${row3[@]}"
+echo "${row4[@]}"
+echo "${row5[@]}"
+
+
+
+#first checks if the calledNums array is empty
+#then adds randomly generated numbers to it
+#then checks if random number was previously generated
+#if so generates a new one
+declare -a calledNums=()
+ran=`expr $RANDOM \% 75 + 1`
+
+if [ -z "$calledNums" ]
+then
+        calledNums+=("$ran")
+fi
+
+if [[ "$ran" =~ "${calledNums[*]}" ]]
+        then
+        ran=`expr $RANDOM \% 75 + 1`
+fi
+
+#marks the card if generated number is in the card
+#similar to Dan's code with slight changes
+
+
+
+#read -sp 'Hit any button to draw a number and hit q to quit."
+
+
+for i in $wholecard
+do
+        if [[ "${wholecard[$i]}" =~ "$ran" ]]
+        then
+            ${wholecard[$i]}="${wholecard[$i]}""m"
+        fi
+done
+
+
+#this is the card marker section of the code. We have a pseudovariable
+#callednumber will be whatever the $RANDOM number is. 
+
+for i in $wholecard
+do
+    if [[ $ran == ${wholecard[$i]} ]]
+    then
+        ${wholecard[$i]}="${wholecard[$i]}""m"
+    fi
+done
+
+#these will be the error checks, the first one here is checking if there are 26 items in the array.
+if [ ${#wholecard[@]} == 26 ]
+then
+    echo "the length is 26 items"
+fi
+
+
+
+#exit code 4 - card format error
+
+#1stcolumn=${wholecard[@]}
+
+firstcolumn=( ${wholecard[1]} ${wholecard[6]} ${wholecard[11]} ${wholecard[16]} ${wholecard[21]} )
+
+
+for j in {0..4}
+do
+#    echo "this is 1st column ${firstcolumn[$j]}"
+    if [ ${firstcolumn[$j]} -gt 15 ] || [ ${firstcolumn[$j]} -lt 1 ]
+    then
+       echo "card format error"
+       exit 4
+    fi
+done
+
+
+secondcolumn=( ${wholecard[2]} ${wholecard[7]} ${wholecard[12]} ${wholecard[17]} ${wholecard[22]} )
+
+for j in {0..4}
+do
+    if [ ${secondcolumn[$j]} -gt 30 ] || [ ${secondcolumn[$j]} -lt 16 ]
+    then
+       echo "card format error"
+       exit 4
+    fi
+done
+
+
+thirdcolumn=( ${wholecard[3]} ${wholecard[8]} ${wholecard[13]} ${wholecard[18]} ${wholecard[23]} )
+
+for j in 0 1 3 4
+do
+    if [ ${thirdcolumn[$j]} -gt 45 ] || [ ${thirdcolumn[$j]} -lt 31 ]
+    then
+       echo "card format error"
+       exit 4
+    fi
+done
+
+
+fourthcolumn=( ${wholecard[4]} ${wholecard[9]} ${wholecard[14]} ${wholecard[19]} ${wholecard[24]} )
+
+for j in {0..4}
+do
+    if [ ${fourthcolumn[$j]} -gt 60 ] || [ ${fourthcolumn[$j]} -lt 46 ]
+    then
+       echo "card format error"
+       exit 4
+    fi
+done
+
+fifthcolumn=( ${wholecard[5]} ${wholecard[10]} ${wholecard[15]} ${wholecard[20]} ${wholecard[25]} )
+
+for j in {0..4}
+do
+    if [ ${fifthcolumn[$j]} -gt 75 ] || [ ${fifthcolumn[$j]} -lt 61 ]
+    then
+       echo "card format error"
+       exit 4
+    fi
+done
