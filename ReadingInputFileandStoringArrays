@@ -1,0 +1,64 @@
+#!/bin/bash
+
+declare -a wholecard=() 
+while read line;
+do
+    wholecard+=($line)
+done < ./$1 #this uses a filename in the commandline in the same directory
+
+# ( "${arr[@]:index:length}" "item to add" "${arr[@]:index:length}" )
+
+if [ ${#wholecard[@]} != 26 ]
+then 
+    echo "the length is 26 items"
+    #add in the error message here and then add in the prompt to make a randomly generated card. 
+fi 
+
+echo "here is the element at the first index ${wholecard[1]}"
+
+
+seed=${wholecard[0]}
+
+row1=( "${wholecard[@]:1:5}" )
+
+row2=( "${wholecard[@]:6:5}" )
+
+row3=( "${wholecard[@]:11:5}" )
+
+row4=( "${wholecard[@]:16:5}" )
+
+row5=( "${wholecard[@]:21:5}" )
+
+echo "${row1[@]}"
+echo "${row2[@]}"
+echo "${row3[@]}"
+echo "${row4[@]}"
+echo "${row5[@]}"
+
+
+#this is the card marker section of the code. We have a pseudovariable
+#callednumber will be whatever the $RANDOM number is. 
+
+
+
+
+for i in $wholecard 
+do
+    if [ callednumber == ${wholecard[$i]} ]
+    then 
+        ${wholecard[$i]}="${wholecard[$i]}""m"
+    fi 
+
+#these will be the error checks, the first one here is checking if there are 26 items in the array. 
+if [ ${#wholecard[@]} == 26 ]
+then 
+    echo "the length is 26 items"
+fi 
+
+#the next checks will be for appropriate length of rows of columns and that a seed exists. 
+
+#we're importing the file, and storing all the lines into 
+#an array of elements separated by spaces and newlines. 
+#We will then test the length of the array and of the 
+#individual elements (uniqueness, range, quantity). 
+exit

@@ -1,0 +1,229 @@
+#!/bin/bash
+
+declare -a wholecard=()
+while read line;
+do
+    wholecard+=($line)
+done < ./$1 #this uses a filename in the commandline in the same directory
+
+# ( "${arr[@]:index:length}" "item to add" "${arr[@]:index:length}" )
+
+if [ ${#wholecard[@]} != 26 ]
+then
+    echo "the length is not 26 items"
+    #add in the error message here and then add in the prompt to make a randomly generated card. 
+fi
+
+echo "here is the element at the first index ${wholecard[1]}"
+
+
+seed=${wholecard[0]}
+
+rowone=( ${wholecard[@]:1:5} )
+
+rowtwo=( ${wholecard[@]:6:5} )
+
+rowthree=( ${wholecard[@]:11:2} "00m "${wholecard[@]:14:2} )
+
+rowfour=( ${wholecard[@]:16:5} )
+
+rowfive=( ${wholecard[@]:21:5} )
+
+#Need to add extra spaces inbetween the elements in each rowarray. 
+#This will also instantiate our variables for display
+
+row1=() 
+row2=()
+row3=()
+row4=()
+row5=()
+
+for i in {0..4}
+do
+    row1+=("${rowone[$i]} ") 
+    row2+=("${rowtwo[$i]} ")    
+    row3+=("${rowthree[$i]} ") 
+    row4+=("${rowfour[$i]} ")
+    row5+=("${rowfive[$i]} ") 
+done
+
+declare -a calledNums=()
+declare -a calllist=() 
+ran=`expr $RANDOM \% 75 + 1`
+
+wholecardnoseed=${wholecard[@]:1}
+
+while true
+do 
+    clear
+    #the code under here will display the card and modify it with the marks.  
+    echo "CALL LIST: ${calllist[@]}"
+    echo " L   I   N   U   X"
+    echo "${row1[@]}"
+    echo "${row2[@]}"
+    echo "${row3[@]}"
+    echo "${row4[@]}"
+    echo "${row5[@]}"        
+
+    read -r -n1 -p "enter any key to get a call or q to quit: " input
+    if [[ "$input" =~ [q] ]]
+    then
+        exit 0
+    else
+        echo "random num is: $ran"
+        #This is adding elements to the called numbers list 
+        if [ ${#calledNums[@]} -eq 0 ] || [[ ! "${calledNums[*]}" =~ "$ran" ]]
+        then
+            calledNums+=($ran)
+            #This is checking $ran and adding L/I/N/U/X
+            if [ $ran -le 15 ] && [ $ran -ge 1 ]
+            then
+                calllist+=("L""$ran")
+            elif [ $ran -le 30 ] && [ $ran -ge 16 ]
+            then
+                calllist+=("I""$ran")
+            elif [ $ran -le 45 ] && [ $ran -ge 31 ]
+            then
+                calllist+=("N""$ran")
+            elif [ $ran -le 60 ] && [ $ran -ge 46 ]
+            then
+                calllist+=("U""$ran")
+            elif [ $ran -le 75 ] && [ $ran -ge 61 ]
+            then
+                calllist+=("X""$ran")
+            fi
+        fi
+        #This is checking if $ran is in the card
+        if [[ "${wholecardnoseed[*]}" =~ "$ran" ]]
+        then
+            echo "$ran is in the card"
+            #checks card if ran is in it, then checks rows/cols/corners and
+            #adds m to the row. 
+            #will need a final check to go through rows/cols/corners and use
+            #counter tmp or i/j to see if rows/cols contains 5 m's or if 
+            #corners has 4 m's 
+        fi 
+        
+    fi
+    #generates new random number
+    ran=`expr $RANDOM \% 75 + 1`
+done
+ 
+
+#first checks if the calledNums array is empty
+#then adds randomly generated numbers to it
+#then checks if random number was previously generated
+#if so generates a new one
+
+declare -a calledNums=()
+ran=`expr $RANDOM \% 75 + 1`
+
+if [ -z "$calledNums" ]
+then
+        calledNums+=("$ran")
+fi
+
+if [[ "$ran" =~ "${calledNums[*]}" ]]
+        then
+        ran=`expr $RANDOM \% 75 + 1`
+fi
+
+#marks the card if generated number is in the card
+#similar to Dan's code with slight changes
+
+
+
+#read -sp 'Hit any button to draw a number and hit q to quit."
+
+
+for i in $wholecard
+do
+        if [[ "${wholecard[$i]}" =~ "$ran" ]]
+        then
+            ${wholecard[$i]}="${wholecard[$i]}""m"
+        fi
+done
+
+
+#this is the card marker section of the code. We have a pseudovariable
+#callednumber will be whatever the $RANDOM number is. 
+
+for i in $wholecard
+do
+    if [[ $ran == ${wholecard[$i]} ]]
+    then
+        ${wholecard[$i]}="${wholecard[$i]}""m"
+    fi
+done
+
+#these will be the error checks, the first one here is checking if there are 26 items in the array.
+if [ ${#wholecard[@]} == 26 ]
+then
+    echo "the length is 26 items"
+fi
+
+
+
+#exit code 4 - card format error
+
+#1stcolumn=${wholecard[@]}
+
+firstcolumn=( ${wholecard[1]} ${wholecard[6]} ${wholecard[11]} ${wholecard[16]} ${wholecard[21]} )
+
+
+for j in {0..4}
+do
+#    echo "this is 1st column ${firstcolumn[$j]}"
+    if [ ${firstcolumn[$j]} -gt 15 ] || [ ${firstcolumn[$j]} -lt 1 ]
+    then
+       echo "card format error"
+       exit 4
+    fi
+done
+
+
+secondcolumn=( ${wholecard[2]} ${wholecard[7]} ${wholecard[12]} ${wholecard[17]} ${wholecard[22]} )
+
+for j in {0..4}
+do
+    if [ ${secondcolumn[$j]} -gt 30 ] || [ ${secondcolumn[$j]} -lt 16 ]
+    then
+       echo "card format error"
+       exit 4
+    fi
+done
+
+
+thirdcolumn=( ${wholecard[3]} ${wholecard[8]} ${wholecard[13]} ${wholecard[18]} ${wholecard[23]} )
+
+for j in 0 1 3 4
+do
+    if [ ${thirdcolumn[$j]} -gt 45 ] || [ ${thirdcolumn[$j]} -lt 31 ]
+    then
+       echo "card format error"
+       exit 4
+    fi
+done
+
+
+fourthcolumn=( ${wholecard[4]} ${wholecard[9]} ${wholecard[14]} ${wholecard[19]} ${wholecard[24]} )
+
+for j in {0..4}
+do
+    if [ ${fourthcolumn[$j]} -gt 60 ] || [ ${fourthcolumn[$j]} -lt 46 ]
+    then
+       echo "card format error"
+       exit 4
+    fi
+done
+
+fifthcolumn=( ${wholecard[5]} ${wholecard[10]} ${wholecard[15]} ${wholecard[20]} ${wholecard[25]} )
+
+for j in {0..4}
+do
+    if [ ${fifthcolumn[$j]} -gt 75 ] || [ ${fifthcolumn[$j]} -lt 61 ]
+    then
+       echo "card format error"
+       exit 4
+    fi
+done
