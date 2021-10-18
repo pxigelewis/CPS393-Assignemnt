@@ -1,0 +1,110 @@
+#!/bin/bash
+
+#iterates through each LINUX column
+
+firstcolumn=( ${wholecard[1]} ${wholecard[6]} ${wholecard[11]} ${wholecard[16]} ${wholecard[21]} )
+
+secondcolumn=( ${wholecard[2]} ${wholecard[7]} ${wholecard[12]} ${wholecard[17]} ${wholecard[22]} )
+
+thirdcolumn=( ${wholecard[3]} ${wholecard[8]} ${wholecard[13]} ${wholecard[18]} ${wholecard[23]} )
+
+fourthcolumn=( ${wholecard[4]} ${wholecard[9]} ${wholecard[14]} ${wholecard[19]} ${wholecard[24]} )
+
+fifthcolumn=( ${wholecard[5]} ${wholecard[10]} ${wholecard[15]} ${wholecard[20]} ${wholecard[25]} )
+
+#exit status 4 - part one
+#checks if each column is within range, if not prints error and exits game
+#i.e 1-15, 16-30, 31-45, 46-60, 61-75
+
+for j in {0..4}
+do
+    if [ ${firstcolumn[$j]} -gt 15 ] || [ ${firstcolumn[$j]} -lt 1 ]
+    then
+       echo "card format error"
+       exit 4
+    fi
+done
+
+for j in {0..4}
+do
+    if [ ${secondcolumn[$j]} -gt 30 ] || [ ${secondcolumn[$j]} -lt 16 ]
+    then
+       echo "card format error"
+       exit 4
+    fi
+done
+
+for j in 0 1 3 4
+do
+    if [ ${thirdcolumn[$j]} -gt 45 ] || [ ${thirdcolumn[$j]} -lt 31 ]
+    then
+       echo "card format error"
+       exit 4
+    fi
+done
+
+for j in {0..4}
+do
+    if [ ${fourthcolumn[$j]} -gt 60 ] || [ ${fourthcolumn[$j]} -lt 46 ]
+    then
+       echo "card format error"
+       exit 4
+    fi
+done
+
+for j in {0..4}
+do
+    if [ ${fifthcolumn[$j]} -gt 75 ] || [ ${fifthcolumn[$j]} -lt 61 ]
+    then
+       echo "card format error"
+       exit 4
+    fi
+done
+
+#exit status 4 - part two
+#checks if LINUX card contains duplicate values, if so prints error and exits game
+
+for i in "${firstcolumn[@]}"
+do
+    if [[ "${firstcolumn[*]}" =~ "${firstcolumn[$i]}" ]]
+    then
+        echo "card format error (has duplicates)"
+        exit 4
+    fi
+done
+
+for i in "${secondcolumn[@]}"
+do
+    if [[ "${secondcolumn[*]}" =~ "${secondcolumn[$i]}" ]]
+    then
+        echo "card format error (has duplicates)"
+        exit 4
+    fi
+done
+
+for i in "${thirdcolumn[@]}"
+do
+    if [[ "${thirdcolumn[*]}" =~ "${secondcolumn[$i]}" ]]
+    then
+        echo "card format error (has duplicates)"
+        exit 4
+    fi
+done
+
+for i in "${fourthcolumn[@]}"
+do
+    if [[ "${fourthcolumn[*]}" =~ "${fourthcolumn[$i]}" ]]
+    then
+        echo "card format error (has duplicates)"
+        exit 4
+    fi
+done
+
+for i in "${fifthcolumn[@]}"
+do
+    if [[ "${fifthcolumn[*]}" =~ "${fifthcolumn[$i]}" ]]
+    then
+        echo "card format error (has duplicates)"
+        exit 4
+    fi
+done
