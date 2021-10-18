@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #iterates through each LINUX column
 
 firstcolumn=( ${wholecard[1]} ${wholecard[6]} ${wholecard[11]} ${wholecard[16]} ${wholecard[21]} )
@@ -66,7 +68,7 @@ for i in "${firstcolumn[@]}"
 do
     if [[ "${firstcolumn[*]}" =~ "${firstcolumn[$i]}" ]]
     then
-        echo "card has duplicates"
+        echo "card format error (has duplicates)"
         exit 4
     fi
 done
@@ -75,7 +77,7 @@ for i in "${secondcolumn[@]}"
 do
     if [[ "${secondcolumn[*]}" =~ "${secondcolumn[$i]}" ]]
     then
-        echo "card has duplicates"
+        echo "card format error (has duplicates)"
         exit 4
     fi
 done
@@ -84,7 +86,7 @@ for i in "${thirdcolumn[@]}"
 do
     if [[ "${thirdcolumn[*]}" =~ "${secondcolumn[$i]}" ]]
     then
-        echo "card has duplicates"
+        echo "card format error (has duplicates)"
         exit 4
     fi
 done
@@ -93,7 +95,7 @@ for i in "${fourthcolumn[@]}"
 do
     if [[ "${fourthcolumn[*]}" =~ "${fourthcolumn[$i]}" ]]
     then
-        echo "card has duplicates"
+        echo "card format error (has duplicates)"
         exit 4
     fi
 done
@@ -102,7 +104,7 @@ for i in "${fifthcolumn[@]}"
 do
     if [[ "${fifthcolumn[*]}" =~ "${fifthcolumn[$i]}" ]]
     then
-        echo "card has duplicates"
+        echo "card format error (has duplicates)"
         exit 4
     fi
 done
