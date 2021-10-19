@@ -1,0 +1,341 @@
+#dhaslam Haslam Daniel 500517161 Section 2 
+#prlewis Lewis Paige 500817958 Section 6
+#mkrathod Rathod Maheen 500842471 Section 1
+#irajwani Rajwani Inaya 501037903 Section 7
+
+
+#!/bin/bash
+
+#exit status 1
+
+if [ ! -f $1 -o ! -r $1 ]
+then
+    echo "Input file is missing or unreadable."
+    exit 1
+fi
+
+
+
+#exit status 2
+
+if [[ $(cat $1 | wc -l) != 6 ]]
+then
+    echo "input file does not have 6 lines"
+    exit 2
+fi
+
+
+
+#exit 3 - see if seed line has white space, extra numbers, etc
+
+declare -a wholecard=()
+while read line;
+do
+    wholecard+=($line)
+done < ./$1 #this uses a filename in the commandline in the same directory
+
+
+if [[ ${#wholecard[@]} -ne 26 ]]
+then
+    echo "the length is not 26 items"
+    exit 3
+fi
+
+
+#exit status 3
+
+if [[ ! "${wholecard[0]}" =~ [0-9][0-9][0-9][0-9] ]]  #checking if the file has any non-digit characters
+then
+    echo "seed line format error"
+    exit 3
+fi
+
+for i in {1..25}
+do
+    if [[ ! "${wholecard[$i]}" =~ [0-9][0-9] ]]
+    then
+        echo "card format error (layout error)"
+        exit 3
+    fi
+done
+
+
+
+
+#exit code 4 - card format error
+
+
+firstcolumn=( ${wholecard[1]} ${wholecard[6]} ${wholecard[11]} ${wholecard[16]} ${wholecard[21]} )
+
+
+for j in {0..4}
+do
+#    echo "this is 1st column ${firstcolumn[$j]}"
+    if [ ${firstcolumn[$j]} -gt 15 ] || [ ${firstcolumn[$j]} -lt 1 ]
+    then
+       echo "card format error"
+       exit 4
+    fi
+done
+
+
+secondcolumn=( ${wholecard[2]} ${wholecard[7]} ${wholecard[12]} ${wholecard[17]} ${wholecard[22]} )
+
+for j in {0..4}
+do
+    if [ ${secondcolumn[$j]} -gt 30 ] || [ ${secondcolumn[$j]} -lt 16 ]
+    then
+       echo "card format error"
+       exit 4
+    fi
+done
+
+
+thirdcolumn=( ${wholecard[3]} ${wholecard[8]} ${wholecard[13]} ${wholecard[18]} ${wholecard[23]} )
+
+for j in 0 1 3 4
+do
+    if [ ${thirdcolumn[$j]} -gt 45 ] || [ ${thirdcolumn[$j]} -lt 31 ]
+    then
+       echo "card format error"
+       exit 4
+    fi
+done
+
+
+fourthcolumn=( ${wholecard[4]} ${wholecard[9]} ${wholecard[14]} ${wholecard[19]} ${wholecard[24]} )
+
+for j in {0..4}
+do
+    if [ ${fourthcolumn[$j]} -gt 60 ] || [ ${fourthcolumn[$j]} -lt 46 ]
+    then
+       echo "card format error"
+       exit 4
+    fi
+done
+
+fifthcolumn=( ${wholecard[5]} ${wholecard[10]} ${wholecard[15]} ${wholecard[20]} ${wholecard[25]} )
+
+for j in {0..4}
+do
+    if [ ${fifthcolumn[$j]} -gt 75 ] || [ ${fifthcolumn[$j]} -lt 61 ]
+    then
+       echo "card format error"
+       exit 4
+    fi
+done
+
+
+
+
+
+
+column1=( ${wholecard[1]} ${wholecard[6]} ${wholecard[11]} ${wholecard[16]} ${wholecard[21]} )
+col1=()
+for i in {0..4}
+do
+    if [[ $((10#${column1[$i]})) -le 10 ]]
+    then
+        col1+=( $((10#${column1[$i]})) )
+    else
+        col1+=( ${column1[$i]} )
+    fi
+done
+
+seed=${wholecard[0]}
+
+row01=( ${wholecard[@]:1:5} )
+row02=( ${wholecard[@]:6:5} )
+row03=( ${wholecard[@]:11:2} "00m "${wholecard[@]:14:2} )
+row04=( ${wholecard[@]:16:5} )
+row05=( ${wholecard[@]:21:5} )
+row1=( ${col1[0]} ${wholecard[@]:2:4} )
+row2=( ${col1[1]} ${wholecard[@]:7:4} )
+row3=( ${col1[2]} ${wholecard[@]:12:1} "00m "${wholecard[@]:14:2} )
+row4=( ${col1[3]} ${wholecard[@]:17:4} )
+row5=( ${col1[4]} ${wholecard[@]:22:4} )
+col2=( ${wholecard[2]} ${wholecard[7]} ${wholecard[12]} ${wholecard[17]} ${wholecard[22]} )
+col3=( ${wholecard[3]} ${wholecard[8]} ${wholecard[13]} ${wholecard[18]} ${wholecard[23]} )
+col4=( ${wholecard[4]} ${wholecard[9]} ${wholecard[14]} ${wholecard[19]} ${wholecard[24]} )
+col5=( ${wholecard[5]} ${wholecard[10]} ${wholecard[15]} ${wholecard[20]} ${wholecard[25]} )
+
+corners=( ${col1[0]} ${wholecard[5]} ${col1[4]} ${wholecard[25]} )
+
+
+rowone=()
+rowtwo=()
+rowthree=()
+rowfour=()
+rowfive=()
+
+for i in {0..4}
+do
+    rowone+=("${row01[$i]} ")
+    rowtwo+=("${row02[$i]} ")
+    rowthree+=("${row03[$i]} ")
+    rowfour+=("${row04[$i]} ")
+    rowfive+=("${row05[$i]} ")
+done
+
+declare -a calledNums=()
+declare -a calllist=()
+RANDOM=$seed
+ran=`expr $RANDOM \% 75 + 1`
+
+wholecardnoseed=${wholecard[@]:1}
+
+#these will be our counters for our win condition
+tmp1=0 ; tmp2=0 ; tmp3=0 ; tmp4=0 ; tmp5=0
+tmp6=0 ; tmp7=0 ; tmp8=0 ; tmp9=0 ; tmp10=0 ; tmp11=0
+
+
+while true
+do
+    clear
+    #the code under here will display the card and modify it with the marks.  
+    echo "CALL LIST: ${calllist[@]}"
+    echo " L   I   N   U   X"
+    echo "${rowone[@]}"
+    echo "${rowtwo[@]}"
+    echo "${rowthree[@]}"
+    echo "${rowfour[@]}"
+    echo "${rowfive[@]}"
+
+    read -r -n1 -p "enter any key to get a call or q to quit: " input
+    if [[ "$input" =~ [q] ]]
+    then
+        exit 0
+    else
+        #This is adding elements to the called numbers list 
+        if [ ${#calledNums[@]} -eq 0 ] || [[ ! "${calledNums[*]}" =~ "$ran" ]]
+        then
+calledNums+=($ran)
+            #This is checking $ran and adding L/I/N/U/X
+
+            for i in 0 1 3 4
+            do
+                if [[ ${row3[$i]} -eq $ran ]]
+                then
+                    ((tmp3+=1))
+                    arr=("${rowthree[@]:0:i}")
+                    arr+=("${row03[$i]}""m")
+                    arr+=("${rowthree[@]:$((i+1))}")
+                    rowthree=("${arr[@]}")
+                fi
+                if [[ ${col3[$i]} -eq $ran ]]
+                then
+                    ((tmp8+=1))
+                    echo "tmp8 is $tmp8"
+                fi
+            done
+            for i in {0..5}
+            do
+                if [[ ${row1[$i]} -eq $ran ]]
+                then
+                    ((tmp1+=1))
+                    arr=("${rowone[@]:0:i}")
+                    arr+=("${row01[$i]}""m")
+                    arr+=("${rowone[@]:$((i+1))}")
+                    rowone=("${arr[@]}")
+                fi
+                if [[ ${row2[$i]} -eq $ran ]]
+                then
+                    ((tmp2+=1))
+                    arr=("${rowtwo[@]:0:i}")
+                    arr+=("${row02[$i]}""m")
+                    arr+=("${rowtwo[@]:$((i+1))}")
+                    rowtwo=("${arr[@]}")
+                fi
+if [[ ${row4[$i]} -eq $ran ]]
+                then
+                    ((tmp4+=1))
+                    arr=("${rowfour[@]:0:i}")
+                    arr+=("${row04[$i]}""m")
+                    arr+=("${rowfour[@]:$((i+1))}")
+                    rowfour=("${arr[@]}")
+                fi
+                if [[ ${row5[$i]} -eq $ran ]]
+                then
+                    ((tmp5+=1))
+                    arr=("${rowfive[@]:0:i}")
+                    arr+=("${row05[$i]}""m")
+                    arr+=("${rowfive[@]:$((i+1))}")
+                    rowfive=("${arr[@]}")
+                fi
+                if [[ ${col1[$i]} -eq $ran ]]
+                then
+                    ((tmp6+=1))
+                    echo "tmp6 is $tmp6"
+                fi
+                if [[ ${col2[$i]} -eq $ran ]]
+                then
+                    ((tmp7+=1))
+                    echo "tmp7 is $tmp7"
+                fi
+                if [[ ${col4[$i]} -eq $ran ]]
+                then
+                    ((tmp9+=1))
+                    echo "tmp9 is $tmp9"
+fi
+                if [[ ${col5[$i]} -eq $ran ]]
+                then
+                    ((tmp10+=1))
+                     echo "tmp10 is $tmp10"
+                fi
+            done
+            for i in {0..3}
+            do
+                if [[ ${corners[$i]} -eq $ran ]]
+                then
+                    ((tmp11+=1))
+                fi
+            done
+            if [ $ran -le 15 ] && [ $ran -ge 1 ]
+            then
+                calllist+=("L""$ran")
+            elif [ $ran -le 30 ] && [ $ran -ge 16 ]
+            then
+                calllist+=("I""$ran")
+            elif [ $ran -le 45 ] && [ $ran -ge 31 ]
+            then
+                calllist+=("N""$ran")
+            elif [ $ran -le 60 ] && [ $ran -ge 46 ]
+            then
+                calllist+=("U""$ran")
+            elif [ $ran -le 75 ] && [ $ran -ge 61 ]
+            then
+                calllist+=("X""$ran")
+            fi
+        fi
+    fi
+    clear
+#the code under here will display the card and modify it with the marks.  
+    echo "CALL LIST: ${calllist[@]}"
+    echo " L   I   N   U   X"
+    echo "${rowone[@]}"
+    echo "${rowtwo[@]}"
+    echo "${rowthree[@]}"
+    echo "${rowfour[@]}"
+    echo "${rowfive[@]}"
+
+    if [[ $tmp1 -eq 5 ]] || [[ $tmp2 -eq 5 ]] || [[ $tmp3 -eq 4 ]] || [[ $tmp4 -eq 5 ]] || [[ $tmp5 -eq 5 ]]
+    then
+        echo "you win horizontally!"
+        exit 0
+    fi
+    if [[ $tmp6 -eq 5 ]] || [[ $tmp7 -eq 5 ]] || [[ $tmp8 -eq 4 ]] || [[ $tmp9 -eq 5 ]] || [[ $tmp10 -eq 5 ]]
+    then
+        echo "you win vertically!"
+        exit 0
+    fi
+    if [[ $tmp11 -eq 4 ]]
+    then
+        echo "you win with corners!"
+        exit 0
+    fi
+#generates new random number
+    while [[ "${calledNums[*]}" =~ "$ran" ]]
+    do
+        ran=`expr $RANDOM \% 75 + 1`
+    done
+done
