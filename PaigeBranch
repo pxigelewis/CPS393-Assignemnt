@@ -20,9 +20,6 @@ fi
 
 
 
-
-
-#can use grep maybe for finding non number characters
 #exit 3 - see if seed line has white space, extra numbers, etc
 
 declare -a wholecard=()
