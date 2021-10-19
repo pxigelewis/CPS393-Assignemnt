@@ -35,6 +35,7 @@ echo "${row3[@]}"
 echo "${row4[@]}"
 echo "${row5[@]}"
 
+<<<<<<< Updated upstream
 
 #this is the card marker section of the code. We have a pseudovariable
 #callednumber will be whatever the $RANDOM number is. 
@@ -42,6 +43,11 @@ echo "${row5[@]}"
 
 
 
+=======
+#this is the card marker section of the code. We have a pseudovariable
+#callednumber will be whatever the $RANDOM number is. 
+
+>>>>>>> Stashed changes
 for i in $wholecard 
 do
     if [ callednumber == ${wholecard[$i]} ]
